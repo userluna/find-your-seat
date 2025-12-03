@@ -203,7 +203,7 @@
         <input id="searchInput" type="text" placeholder="例如：Yuxian Du/Ziyun Gao 或 Bob Du/Luna Gao >_<" />
         <button onclick="searchGuest()">🔍 搜索 / Search</button>
       </div>
-      <div class="hint">支持英文名、中文名(Pinyin)、昵称（请与邀请名单上的拼写一致）。</div>
+      <div class="hint">支持英文名、中文名(Pinyin)，请与邀请名单上的拼写一致。</div>
       <div id="result" class="result" style="display:none;"></div>
     </div>
   </div>
@@ -381,7 +381,7 @@
 
         resultBox.innerHTML = `
           <strong>${escapeHtml(g.full_name || g.alt_names || "")}</strong><br>
-          你的座位在：<strong>${escapeHtml(tableRaw)}</strong>（${zhLabel}）
+          您的座位在：<strong>${escapeHtml(tableRaw)}</strong>（${zhLabel}）
         `;
         return;
       }
