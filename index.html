@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Find Your Seat - Ziyun & Yuxian Wedding</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- 手写标题字体 + 正文字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Nunito:wght@300;400;500;600&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      color: #22323a;
+      font-family: "Nunito", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      /* Joy 风浅绿底 + 非常淡的绿植渐变 */
+      background:
+        radial-gradient(circle at 0% 0%, rgba(150, 181, 160, 0.22), transparent 58%),
+        radial-gradient(circle at 100% 100%, rgba(178, 205, 186, 0.18), transparent 55%),
+        #eef4f2;
+      min-height: 100vh;
+    }
+
+    .wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 28px 18px 40px;
+    }
+
+    /* 顶部婚礼标题区域：风格贴合 Joy */
+    .wedding-header {
+      text-align: center;
+      margin-bottom: 26px;
+      padding: 24px 12px 18px;
+      position: relative;
+    }
+
+    /* 顶部两侧淡叶子亮斑 */
+    .wedding-header::before,
+    .wedding-header::after {
+      content: "";
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(132, 167, 142, 0.9), transparent 60%);
+      opacity: 0.16;
+      z-index: -1;
+    }
+    .wedding-header::before { top: -16px; left: 10px; }
+    .wedding-header::after  { top: -10px; right: 14px; transform: scale(0.9); }
+
+    .couple-names {
+      font-family: "Great Vibes", cursive;
+      font-size: 40px;
+      line-height: 1.1;
+      color: #445b64;
+      font-weight: 400;
+    }
+
+    .wedding-date {
+      margin-top: 8px;
+      font-size: 14px;
+      color: #647680;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .find-seat-title {
+      margin-top: 22px;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      color: #2c3b43;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      font-size: 13px;
+      color: #6c7c84;
+    }
+
+    /* 卡片：轻薄、圆角，贴合 Joy */
+    .card {
+      background: rgba(255, 255, 255, 0.97);
+      border-radius: 20px;
+      padding: 20px 18px;
+      box-shadow: 0 12px 30px rgba(116, 137, 122, 0.08);
+      border: 1px solid rgba(201, 213, 205, 0.8);
+      backdrop-filter: blur(4px);
+      max-width: 640px;
+      margin: 0 auto 24px;
+    }
+
+    /* 搜索区域 */
+    .search-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .search-row input {
+      flex: 1 1 230px;
+      max-width: 360px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid #c7d3cd;
+      font-size: 14px;
+      outline: none;
+      background: rgba(255, 255, 255, 0.95);
+      color: #243338;
+    }
+
+    .search-row input::placeholder {
+      color: #9aa6a2;
+    }
+
+    .search-row input:focus {
+      border-color: #7ca58a;
+      box-shadow: 0 0 0 2px rgba(124, 165, 138, 0.25);
+    }
+
+    .search-row button {
+      border-radius: 999px;
+      border: none;
+      padding: 10px 20px;
+      font-size: 14px;
+      cursor: pointer;
+      background: #7ca58a;
+      color: #fff;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      transition: background 0.18s ease, transform 0.06s ease, box-shadow 0.12s ease;
+      white-space: nowrap;
+    }
+
+    .search-row button:hover {
+      background: #6d947a;
+      box-shadow: 0 4px 14px rgba(86, 123, 98, 0.25);
+    }
+
+    .search-row button:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 8px rgba(86, 123, 98, 0.25);
+    }
+
+    .hint {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 12px;
+      color: #6e7d78;
+    }
+
+    .result {
+      margin-top: 16px;
+      border-radius: 14px;
+      padding: 14px 16px;
+      background: #edf5ee;
+      border: 1px solid #c2d7c4;
+      font-size: 14px;
+      color: #263530;
+    }
+
+    .result-error {
+      background: #fff2f2;
+      border-color: #f1b8b8;
+      color: #b00020;
+    }
+
+    @media (max-width: 480px) {
+      .wrapper { padding: 20px 14px 28px; }
+      .couple-names { font-size: 32px; }
+      .find-seat-title { font-size: 16px; letter-spacing: 0.16em; }
+      .card { padding: 16px 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+
+    <!-- 顶部婚礼标题（Joy 风格） -->
+    <div class="wedding-header">
+      <div class="couple-names">Ziyun &amp; Yuxian</div>
+      <div class="wedding-date">December 14, 2025 · Jersey City</div>
+      <div class="find-seat-title">FIND YOUR SEAT</div>
+      <div class="subtitle">请输入姓名 / Please enter your name</div>
+    </div>
+
+    <!-- 搜索卡片 -->
+    <div class="card">
+      <div class="search-row">
+        <input id="searchInput" type="text" placeholder="例如：Shunde Du 或 中文名" />
+        <button onclick="searchGuest()">🔍 搜索 / Search</button>
+      </div>
+      <div class="hint">支持英文名、中文名、昵称（请与邀请名单上的拼写一致）。</div>
+      <div id="result" class="result" style="display:none;"></div>
+    </div>
+  </div>
+
+  <script>
+    /* ✨ 在这里粘贴你从 Google Sheet 导出的所有行 ✨
+       例如：
+       const GUESTS = [
+         { full_name: "Shunde Du",       alt_names: "",           table: "table1" },
+         { full_name: "Xiuying Zhuang",  alt_names: "小莊",       table: "table1" },
+         ...
+       ];
+    */
+    const GUESTS = [
+      // { full_name: "Shunde Du", alt_names: "", table: "table1" },
+{ full_name: "Xiuying Zhuang", alt_names: "", table: "table1" },
+{ full_name: "Huiying Du", alt_names: "", table: "table1" },
+{ full_name: "Hosanna Kuah", alt_names: "", table: "table1" },
+{ full_name: "Chen Sheng", alt_names: "", table: "table1" },
+{ full_name: "Matthew Sheng", alt_names: "", table: "table1" },
+{ full_name: "Sarah Sheng", alt_names: "", table: "table1" },
+{ full_name: "Joshua Sheng", alt_names: "", table: "table1" },
+{ full_name: "Jedidiah Sheng", alt_names: "", table: "table1" },
+{ full_name: "Jonathan Chang", alt_names: "", table: "table1" },
+{ full_name: "Lin Zhang", alt_names: "", table: "table 2" },
+{ full_name: "Mengxia Cao", alt_names: "", table: "table 2" },
+{ full_name: "Jiang Peng", alt_names: "", table: "table 2" },
+{ full_name: "Danqing Chen", alt_names: "", table: "table 2" },
+{ full_name: "Xiaodong Chen", alt_names: "", table: "table 2" },
+{ full_name: "Dongbo Xiao", alt_names: "", table: "table 2" },
+{ full_name: "Cheng Gu", alt_names: "", table: "table 2" },
+{ full_name: "Lan Xu", alt_names: "", table: "table 2" },
+{ full_name: "Hong Wang", alt_names: "", table: "table 2" },
+{ full_name: "Ruiyun Jiang", alt_names: "", table: "table 2" },
+{ full_name: "Shirley Woo", alt_names: "", table: "table 3" },
+{ full_name: "Edwin Woo", alt_names: "", table: "table 3" },
+{ full_name: "Yokechen Chang", alt_names: "", table: "table 3" },
+{ full_name: "Hwahsung Lee", alt_names: "", table: "table 3" },
+{ full_name: "Carol Jiang", alt_names: "", table: "table 3" },
+{ full_name: "Jack Chen", alt_names: "", table: "table 3" },
+{ full_name: "Margaret Kwok", alt_names: "", table: "table 3" },
+{ full_name: "Sharon Wang", alt_names: "", table: "table 3" },
+{ full_name: "Ed Wang (w/ Sharon)", alt_names: "", table: "table 3" },
+{ full_name: "Leihsin Hsu", alt_names: "", table: "table 3" },
+{ full_name: "Doris Huang", alt_names: "", table: "table 3" },
+{ full_name: "Xiaoping Ma", alt_names: "", table: "table 3" },
+{ full_name: "Sijia Zhang", alt_names: "", table: "table 4" },
+{ full_name: "Yunhuan Mo", alt_names: "", table: "table 4" },
+{ full_name: "Qinlin Li", alt_names: "", table: "table 4" },
+{ full_name: "Faith Wang", alt_names: "", table: "table 4" },
+{ full_name: "Ed Wang (w/ Faith)", alt_names: "", table: "table 4" },
+{ full_name: "Chen Zhang", alt_names: "", table: "table 4" },
+{ full_name: "Austin Bradstreet", alt_names: "", table: "table 4" },
+{ full_name: "Jia Gao", alt_names: "", table: "table 4" },
+{ full_name: "Zihao Zhang", alt_names: "", table: "table 4" },
+{ full_name: "Yu Wang", alt_names: "", table: "table 4" },
+{ full_name: "Hailun Wen", alt_names: "", table: "table 4" },
+{ full_name: "Keren Zhang", alt_names: "", table: "table 5" },
+{ full_name: "Xiaonan Ju", alt_names: "", table: "table 5" },
+{ full_name: "Emma Zheng", alt_names: "", table: "table 5" },
+{ full_name: "Eric Li (w/ Emma)", alt_names: "", table: "table 5" },
+{ full_name: "Alan Li (0-4)", alt_names: "", table: "table 5" },
+{ full_name: "Xiaohan Weng", alt_names: "", table: "table 5" },
+{ full_name: "Ruichen Wu", alt_names: "", table: "table 5" },
+{ full_name: "Carol Xie", alt_names: "", table: "table 5" },
+{ full_name: "Hui Gu", alt_names: "", table: "table 5" },
+{ full_name: "Qingrong Dou (w/ Hui)", alt_names: "", table: "table 5" },
+{ full_name: "Di Wu", alt_names: "", table: "table 6" },
+{ full_name: "Xiaoxuan Liu", alt_names: "", table: "table 6" },
+{ full_name: "Po-Chen Chen", alt_names: "", table: "table 6" },
+{ full_name: "Richard Duan", alt_names: "", table: "table 6" },
+{ full_name: "Christina Duan", alt_names: "", table: "table 6" },
+{ full_name: "Duankun Lee", alt_names: "", table: "table 6" },
+{ full_name: "Shannon Lin", alt_names: "", table: "table 6" },
+{ full_name: "Noel Chao", alt_names: "", table: "table 6" },
+{ full_name: "Yueh Kuan", alt_names: "", table: "table 6" },
+{ full_name: "Kelly Zhou", alt_names: "", table: "table 6" },
+{ full_name: "Feifei Zhao", alt_names: "", table: "table 7" },
+{ full_name: "Xiulian Zhao (w/ Feifei)", alt_names: "", table: "table 7" },
+{ full_name: "Xu Sun", alt_names: "", table: "table 7" },
+{ full_name: "David Sun (0-4)", alt_names: "", table: "table 7" },
+{ full_name: "Yuxin He", alt_names: "", table: "table 7" },
+{ full_name: "Lusu Ni", alt_names: "", table: "table 7" },
+{ full_name: "Gavin Wang", alt_names: "", table: "table 7" },
+{ full_name: "Lucy Wang", alt_names: "", table: "table 7" },
+{ full_name: "Gavin Wu", alt_names: "", table: "table 7" },
+{ full_name: "Zhe Zhang", alt_names: "", table: "table 7" },
+{ full_name: "Chaoqin Chen", alt_names: "", table: "table 8" },
+{ full_name: "Piao Zheng", alt_names: "", table: "table 8" },
+{ full_name: "Xinpeng Wang", alt_names: "", table: "table 8" },
+{ full_name: "Xiaoxi Zhang", alt_names: "", table: "table 8" },
+{ full_name: "Yaping Zou", alt_names: "", table: "table 8" },
+{ full_name: "Shunjie Tao", alt_names: "", table: "table 8" },
+{ full_name: "Sherry Tsai", alt_names: "", table: "table 8" },
+{ full_name: "Xin Zhang", alt_names: "", table: "table 8" },
+{ full_name: "Peiyun Shi", alt_names: "", table: "table 8" },
+{ full_name: "Shirley Shi (0-4)", alt_names: "", table: "table 8" },
+{ full_name: "Xiaofei Lin", alt_names: "", table: "table 9" },
+{ full_name: "Renjie Zhang", alt_names: "", table: "table 9" },
+{ full_name: "Hongxiao Guo", alt_names: "", table: "table 9" },
+{ full_name: "Yu Yang", alt_names: "", table: "table 9" },
+{ full_name: "Sienna Yang (0-4)", alt_names: "", table: "table 9" },
+{ full_name: "Chen Liu", alt_names: "", table: "table 9" },
+{ full_name: "Jue Zhang", alt_names: "", table: "table 9" },
+{ full_name: "Qiaobin Hu", alt_names: "", table: "table 9" },
+{ full_name: "Daniel Song", alt_names: "", table: "table 9" },
+{ full_name: "Lingzi Pan", alt_names: "", table: "table 9" },
+{ full_name: "Jinhai Xie", alt_names: "", table: "table 9" },
+{ full_name: "Yanjing Li", alt_names: "", table: "table 9" },
+{ full_name: "Siwei Zeng", alt_names: "", table: "table 10" },
+{ full_name: "Zhenjun Cui", alt_names: "", table: "table 10" },
+{ full_name: "Anna Liang", alt_names: "", table: "table 10" },
+{ full_name: "Yili Lin", alt_names: "", table: "table 10" },
+{ full_name: "Mengnan Li", alt_names: "", table: "table 10" },
+{ full_name: "Chenlong Lan", alt_names: "", table: "table 10" },
+{ full_name: "Mia Chen", alt_names: "", table: "table 10" },
+{ full_name: "Xiaohui Zhang", alt_names: "", table: "table 10" },
+{ full_name: "Dorothy Zhang (0-4)", alt_names: "", table: "table 10" },
+{ full_name: "Theodore Zhang (0-4)", alt_names: "", table: "table 10" },
+{ full_name: "Yunfeng Xu", alt_names: "", table: "table 10" },
+{ full_name: "Haibo Liang", alt_names: "", table: "table 10" },
+{ full_name: "Di Pang", alt_names: "", table: "table 11" },
+{ full_name: "Nancy Yang", alt_names: "", table: "table 11" },
+{ full_name: "Amy Yan", alt_names: "", table: "table 11" },
+{ full_name: "Jingjian Wang", alt_names: "", table: "table 11" },
+{ full_name: "Binghui Cai", alt_names: "", table: "table 11" },
+{ full_name: "Lydia Li", alt_names: "", table: "table 11" },
+{ full_name: "Andrew Li", alt_names: "", table: "table 11" },
+{ full_name: "Hongyan Wang", alt_names: "", table: "table 11" },
+{ full_name: "Yizhuo Zhong", alt_names: "", table: "table 11" },
+{ full_name: "Xinyi Zhang", alt_names: "", table: "table 11" },
+{ full_name: "Irene Tsao", alt_names: "", table: "table 11" },
+{ full_name: "Yun Xiong", alt_names: "", table: "table 11" },
+    ];
+
+    function searchGuest() {
+      const input = document.getElementById("searchInput");
+      const raw = input.value;
+      const value = raw.trim().toLowerCase();
+      const resultBox = document.getElementById("result");
+
+      if (!value) {
+        resultBox.style.display = "block";
+        resultBox.className = "result";
+        resultBox.innerHTML = "请先输入名字 🙂";
+        return;
+      }
+
+      const matched = GUESTS.filter(g => {
+        const full = (g.full_name || "").toLowerCase();
+        const alts = (g.alt_names || "").toLowerCase();
+        const altParts = alts.split(/[，,]/).map(x => x.trim()).filter(Boolean);
+
+        return full.includes(value)
+            || (alts && alts.includes(value))
+            || altParts.some(a => a && a.includes(value));
+      });
+
+      resultBox.style.display = "block";
+      resultBox.className = "result";
+
+      if (matched.length === 0) {
+        resultBox.className = "result result-error";
+        resultBox.innerHTML = `
+          未找到：<strong>${escapeHtml(raw)}</strong><br>
+          请检查拼写，或尝试英文名 / 中文名 / 小名。
+        `;
+        return;
+      }
+
+      if (matched.length === 1) {
+        const g = matched[0];
+        const tableRaw = (g.table || "").trim();
+        const num = tableRaw.replace(/table/i, "").trim();
+        const zhLabel = num ? num + "号桌" : "未分配桌";
+
+        resultBox.innerHTML = `
+          <strong>${escapeHtml(g.full_name || g.alt_names || "")}</strong><br>
+          你的座位在：<strong>${escapeHtml(tableRaw)}</strong>（${zhLabel}）
+        `;
+        return;
+      }
+
+      // 多条匹配（同名情况）
+      let html = `找到 ${matched.length} 位宾客：<br><br>`;
+      html += matched.map(g => {
+        const tableRaw = (g.table || "").trim();
+        const num = tableRaw.replace(/table/i, "").trim();
+        const zhLabel = num ? num + "号桌" : "未分配桌";
+        return `• <strong>${escapeHtml(g.full_name || g.alt_names || "")}</strong>：${escapeHtml(tableRaw)}（${zhLabel}）`;
+      }).join("<br>");
+      resultBox.innerHTML = html;
+    }
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const input = document.getElementById("searchInput");
+      input.addEventListener("keydown", e => {
+        if (e.key === "Enter") searchGuest();
+      });
+    });
+  </script>
+</body>
+</html>
