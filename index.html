@@ -178,6 +178,35 @@
       color: #b00020;
     }
 
+    /* ---------------------------------------
+       Elegant Wedding Footer (Joy Style)
+    --------------------------------------- */
+    .footer-wrapper {
+      margin-top: 50px;
+      padding-bottom: 40px;
+      text-align: center;
+      color: #6a7b74;
+      font-size: 13px;
+      line-height: 1.65;
+      letter-spacing: 0.02em;
+    }
+
+    .footer-divider {
+      width: 120px;
+      height: 1px;
+      margin: 0 auto 18px;
+      background: linear-gradient(
+        to right,
+        rgba(122, 160, 136, 0),
+        rgba(122, 160, 136, 0.45),
+        rgba(122, 160, 136, 0)
+      );
+    }
+
+    .footer-text {
+      opacity: 0.9;
+    }
+
     @media (max-width: 480px) {
       .wrapper { padding: 20px 14px 28px; }
       .couple-names { font-size: 32px; }
@@ -200,11 +229,20 @@
     <!-- 搜索卡片 -->
     <div class="card">
       <div class="search-row">
-        <input id="searchInput" type="text" placeholder="例如：Yuxian Du/Ziyun Gao 或 Bob Du/Luna Gao >_<" />
+        <input id="searchInput" type="text" placeholder="例如：Yuxian Du 或 Bob Du >_<" />
         <button onclick="searchGuest()">🔍 搜索 / Search</button>
       </div>
       <div class="hint">支持英文名、中文名(Pinyin)，请与邀请名单上的拼写一致。</div>
       <div id="result" class="result" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- Elegant Wedding Footer -->
+  <div class="footer-wrapper">
+    <div class="footer-divider"></div>
+    <div class="footer-text">
+      If you need help, please find our wedding coordinator 💙<br>
+      如需协助，请联系我们的婚礼协调人员 💙
     </div>
   </div>
 
@@ -347,7 +385,7 @@
       if (!value) {
         resultBox.style.display = "block";
         resultBox.className = "result";
-        resultBox.innerHTML = "请先输入名字 🙂";
+        resultBox.innerHTML = "请先输入名字 😊";
         return;
       }
 
